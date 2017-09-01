@@ -22,7 +22,7 @@ public class Main {
 
         List<String> directoryList = DirectoryUtil.loadSubFolder(localFolder);
 
-        //commitTrunkAsMaster();
+        commitTrunkAsMaster();
 
         for (String dir : directoryList) {
             if (dir.equals(".svn")) {
