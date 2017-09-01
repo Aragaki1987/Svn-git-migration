@@ -17,13 +17,13 @@ public class DirectoryUtil {
     private static Logger logger = Logger.getLogger(DirectoryUtil.class);
 
     public static List<String> loadSubFolder(String dirLoc) {
-        if(dirLoc == null || dirLoc.isEmpty()) {
+        if (dirLoc == null || dirLoc.isEmpty()) {
             logger.error("Source Directory is not valid : " + dirLoc);
             return Collections.emptyList();
         }
 
         File directory = new File(dirLoc);
-        if(!directory.exists() || !directory.isDirectory()) {
+        if (!directory.exists() || !directory.isDirectory()) {
             logger.error("Directory location is not exist or not a directory");
             return Collections.emptyList();
         } else {

@@ -11,9 +11,10 @@ import java.util.List;
 
 /**
  * Created by AnNN1 on 5/26/2017.
-         */
+ */
 public class Main {
     private static Logger logger = Logger.getLogger(Main.class);
+
     public static void main(String[] args) throws IOException, GitAPIException {
         PropertyCache.load("git.properties");
 
@@ -23,11 +24,13 @@ public class Main {
 
         commitTrunkAsMaster();
 
-        for(String dir : directoryList) {
-            if(dir.equals("branches")) {
+        for (String dir : directoryList) {
+            if (dir.contains("svn")) {
+                continue;
+            } else if (dir.equals("branches")) {
                 String branchLocation = localFolder + "/branches";
                 commitBranches(branchLocation);
-            } else if(dir.equals("tag")) {
+            } else if (dir.equals("tag")) {
                 String tagLocaltion = localFolder + "/tags";
                 commitTags(tagLocaltion);
             }
@@ -37,7 +40,7 @@ public class Main {
     private static void commitBranches(String dir) {
         List<String> branchList = DirectoryUtil.loadSubFolder(dir);
 
-        for(String branch : branchList) {
+        for (String branch : branchList) {
             commitFolderToBranch(branch);
         }
     }
@@ -45,7 +48,7 @@ public class Main {
     private static void commitTags(String dir) {
         List<String> tagList = DirectoryUtil.loadSubFolder(dir);
 
-        for(String tag : tagList) {
+        for (String tag : tagList) {
             commitFolderToBranch(tag);
         }
     }

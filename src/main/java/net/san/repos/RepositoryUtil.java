@@ -79,7 +79,7 @@ public class RepositoryUtil {
             command.setName(branchName);
             command.call();
         } catch (GitAPIException e) {
-           logger.error("createNewBranch Exception ", e);
+            logger.error("createNewBranch Exception ", e);
         }
     }
 
@@ -112,7 +112,7 @@ public class RepositoryUtil {
             }
 
         } catch (GitAPIException e) {
-           logger.error("Push Exception ", e);
+            logger.error("Push Exception ", e);
         }
 
     }
