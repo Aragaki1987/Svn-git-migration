@@ -15,7 +15,7 @@ import java.util.List;
 public class Main {
     private static Logger logger = Logger.getLogger(Main.class);
     public static void main(String[] args) throws IOException, GitAPIException {
-        PropertyCache.load("./pssgit.properties");
+        PropertyCache.load("git.properties");
 
         String localFolder = PropertyCache.get("local_folder");
 
