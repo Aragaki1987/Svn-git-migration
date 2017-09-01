@@ -22,15 +22,15 @@ public class Main {
 
         List<String> directoryList = DirectoryUtil.loadSubFolder(localFolder);
 
-        commitTrunkAsMaster();
+        //commitTrunkAsMaster();
 
         for (String dir : directoryList) {
-            if (dir.contains("svn")) {
+            if (dir.equals(".svn")) {
                 continue;
             } else if (dir.equals("branches")) {
                 String branchLocation = localFolder + "/branches";
                 commitBranches(branchLocation);
-            } else if (dir.equals("tag")) {
+            } else if (dir.equals("tags")) {
                 String tagLocaltion = localFolder + "/tags";
                 commitTags(tagLocaltion);
             }
