@@ -5,18 +5,28 @@ import net.san.util.PropertyCache;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.CreateBranchCommand;
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
+import org.eclipse.jgit.api.ListTagCommand;
+import org.eclipse.jgit.api.LsRemoteCommand;
 import org.eclipse.jgit.api.PushCommand;
 import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.RefSpec;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by AnNN1 on 5/26/2017.
@@ -28,6 +38,9 @@ public class RepositoryUtil {
     private Git git;
     private String location;
 
+    public RepositoryUtil() {
+    }
+
     public RepositoryUtil(String location) {
         this.location = location;
     }
@@ -35,7 +48,7 @@ public class RepositoryUtil {
     public void init() {
         logger.info("Init local repository");
         try {
-            localRepo = new FileRepository(location + "\\.git");
+            localRepo = new FileRepository(location + "/.git");
             git = new Git(localRepo);
             localRepo.create();
         } catch (Exception e) {
@@ -125,7 +138,7 @@ public class RepositoryUtil {
             command.setMessage("Create tag " + folderName);
             command.call();
         } catch (GitAPIException e) {
-            logger.error("createNewBranch Exception ", e);
+            logger.error("Create New Tag Exception ", e);
         }
     }
 
@@ -148,6 +161,55 @@ public class RepositoryUtil {
         } catch (GitAPIException e) {
             logger.error("Push Exception ", e);
         }
+    }
 
+
+    public List<String> listRemoteTagsName() {
+        logger.info("List remote tags");
+
+        List<String> tagsName = new ArrayList<String>();
+        try {
+            LsRemoteCommand remoteCommand = Git.lsRemoteRepository();
+            remoteCommand.setTags(true).setRemote(PropertyCache.get("remote_repos"));
+            remoteCommand.setCredentialsProvider(CredentialUtil.getCredential(
+                    PropertyCache.get("username"),
+                    PropertyCache.get("password")));
+
+            Collection<Ref> refs = remoteCommand.call();
+
+            for(Ref ref : refs) {
+                tagsName.add(ref.getName());
+            }
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+
+        return tagsName;
+    }
+
+    public List<String> listRemoteBranchesName(String remoteReposiroty) {
+        logger.info("List remote branches");
+
+        List<String> branchesName = new ArrayList<String>();
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            Repository repository = builder.setGitDir(new File(remoteReposiroty + "/.git"))
+                    .readEnvironment()
+                    .findGitDir()
+                    .build();
+            git = new Git(repository);
+            ListBranchCommand branchCommand = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE);
+            List<Ref> refs = branchCommand.call();
+
+            for(Ref ref : refs) {
+                branchesName.add(ref.getName());
+            }
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return branchesName;
     }
 }

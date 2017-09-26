@@ -40,4 +40,14 @@ public class DirectoryUtil {
         }
     }
 
+
+    public static boolean validateFolderName(String folderName) {
+        if(folderName.equals(".svn")) {
+            return false;
+        }
+
+        return true;
+
+    }
+
 }
